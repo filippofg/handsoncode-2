@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Filter {
-    private List<Statement> query;
+    private List<Expression> query;
 
     public Filter() {
         query = new ArrayList<>();
@@ -10,7 +10,7 @@ public class Filter {
 
     // Add a new "property = string" statement
     public Filter equalsTo(String property, String value) {
-        query.add(new EqualsStatement(property.toLowerCase(), value));
+        query.add(new EqualsExpression(property.toLowerCase(), value));
         return this;
     }
 
@@ -28,10 +28,9 @@ public class Filter {
 
     //
     public Filter and() {
-        query.add(new Statement() {
+        query.add(new Expression() {
         });
         return this;
     }
-
 
 }
