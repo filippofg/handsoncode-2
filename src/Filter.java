@@ -1,36 +1,58 @@
-import java.util.ArrayList;
-import java.util.List;
+/* Class Filter:
+ *  represents a filter which determines whether
+ *  a resource matches a given set of criteria.
+ */
 
 public class Filter {
-    private List<Expression> query;
+    private ExpressionList query;
 
     public Filter() {
-        query = new ArrayList<>();
+        query = new ExpressionList();
     }
 
-    // Add a new "property = string" statement
-    public Filter equalsTo(String property, String value) {
-        query.add(new EqualsExpression(property.toLowerCase(), value));
+    // String expressions:
+    // Add a new "property = string" condition
+    public Filter equalsTo(String property, String value) throws IllegalStatementException {
+        query.append(new EqualsExpression(property, value));
         return this;
     }
 
-    // Add a new "property > num" statement
-    public Filter greaterThan(String property, int num) {
-        ;
-        // query.add( new GreaterStatement ( property, num ) );
+    // Numerical expressions:
+    // Add a new "property > num" condition
+    public Filter greaterThan(String property, int number) throws IllegalStatementException {
+        query.append(new GreaterExpression(property, number));
+        return this;
+    }
+    // Add a new "property < num" condition
+    public Filter lesserThan(String property, int number) throws IllegalStatementException {
+        query.append(new LesserExpression(property, number));
         return this;
     }
 
-    public Filter lowerThan(String property, int num) {
-        // query.add(new LowerStatement(property, num));
+    // Boolean expressions:
+    // AND
+    public Filter and() throws IllegalStatementException {
+        query.append(new AndOrExpression(AndOrExpression.AndOr.AND));
+        return this;
+    }
+    // OR
+    public Filter or() throws IllegalStatementException {
+        query.append(new AndOrExpression(AndOrExpression.AndOr.OR));
+        return this;
+    }
+    // NOT
+    public Filter not() throws IllegalStatementException {
+        query.append(new NotExpression());
         return this;
     }
 
-    //
-    public Filter and() {
-        query.add(new Expression() {
-        });
-        return this;
-    }
 
+//    public Boolean matches(Map<String,String> resource) {
+//        return true;
+//    }
+
+    @Override
+    public String toString() {
+        return query.toString();
+    }
 }

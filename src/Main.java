@@ -17,5 +17,19 @@ public class Main {
                 .and()
                 .greaterThan("age", 30);
         */
+        Filter filter = null;
+        try {
+            filter = new Filter()
+                    .equalsTo("role", "administrator")
+                    .or()
+                    .not()
+                    .greaterThan("age", 35);
+        } catch (Exception e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        System.out.println();
+        System.out.println(filter);
     }
 }
