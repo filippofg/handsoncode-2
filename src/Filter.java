@@ -3,6 +3,10 @@
  *  a resource matches a given set of criteria.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Filter {
     private ExpressionList query;
 
@@ -46,10 +50,30 @@ public class Filter {
         return this;
     }
 
+    /* Query a resource with the specified filter conditions.
+     * Returns `true` if there is a match,
+     * otherwise returns `false`.
+     */
+    public boolean matches(Map<String,String> resource) {
+        boolean result = false;
+        boolean negate = false;
+        List<Boolean> results = new ArrayList<>();
+        for (Expression exp: query.getList()) {
+            if (exp instanceof StringExpression) {
+                String key   = ((StringExpression) exp).getProperty();
+                String value = ((StringExpression) exp).getValue();
 
-//    public Boolean matches(Map<String,String> resource) {
-//        return true;
-//    }
+                /* Return true if the resource contains the current property
+                 * and is equal to the specified value
+                 */
+//                if (resource.containsKey(key) && resource.get(key).equals(value)) {
+//                    results.add(true);
+//                }
+            }
+        }
+
+        return result;
+    }
 
     @Override
     public String toString() {

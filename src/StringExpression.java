@@ -7,4 +7,6 @@
  */
 
 interface StringExpression extends Expression {
+    public String getProperty();
+    public String getValue();
 }

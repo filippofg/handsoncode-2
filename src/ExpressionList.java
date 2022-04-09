@@ -12,11 +12,17 @@ public class ExpressionList {
         list = new ArrayList<>();
     }
 
+    public List<Expression> getList() { return list; }
+
     /* Performs a sanity check before the append operation
      * to prevent an inconsistent order of expressions.
      * Accepted sequences of expressions are:
      *      [NOT] String/Numeric
      *      [NOT] String/Numeric AND/OR [NOT] String/Numeric AND/OR [NOT] ...
+     */
+    /* TODO FIXME
+     * this "instanceof" approach doesn't feel much scalable.
+     * Maybe use abstract classes and check attributes?
      */
     public boolean insertionCheck(Expression e) {
         if (    /* list is empty and new expression isn't "AND"/"OR" */
@@ -49,6 +55,10 @@ public class ExpressionList {
         }
     }
 
+    /* Generate a string based on the current filter conditions.
+     * This string can be parsed in the Filter constructor
+     * to build a new object with the same conditions.
+     */
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();

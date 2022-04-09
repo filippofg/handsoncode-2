@@ -20,14 +20,26 @@ public class Main {
         Filter filter = null;
         try {
             filter = new Filter()
-                    .equalsTo("role", "administrator")
+                    .equalsTo("Role", "administrator")
                     .or()
                     .not()
                     .greaterThan("age", 35);
-        } catch (Exception e) {
+        } catch (IllegalStatementException e) {
             System.err.println(e);
             System.exit(1);
         }
+
+        Filter filter1 = null;
+        try {
+            filter1 = new Filter()
+                    .equalsTo("firstname", "joe");
+        } catch (IllegalStatementException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        System.out.println(filter1);
+        System.out.println(filter1.matches(user));
 
         System.out.println();
         System.out.println(filter);

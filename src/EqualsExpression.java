@@ -12,6 +12,9 @@ public class EqualsExpression implements StringExpression {
         this.value    = value;
     }
 
+    public String getProperty() { return property; }
+    public String getValue()    { return value; }
+
     @Override
     public String toString() {
         return property + " = " + value;
