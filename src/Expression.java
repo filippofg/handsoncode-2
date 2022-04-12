@@ -48,7 +48,6 @@ public abstract class Expression {
             out = out + "NOT" + " ";
         return out;
     }
-
     @Override
     public abstract String toString();
 }

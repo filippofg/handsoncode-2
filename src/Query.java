@@ -1,5 +1,7 @@
+import java.util.Stack;
+
 public class Query {
-    private ExpressionStack query;
+    private final ExpressionStack query;
 
     public Query() {
         query = new ExpressionStack();
@@ -34,6 +36,8 @@ public class Query {
         query.enableAndOr(BooleanAndOr.OR);
         return this;
     }
+
+    public Stack<Expression> getStack() { return query.getStack(); }
 
     @Override
     public String toString() {

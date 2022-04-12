@@ -40,8 +40,9 @@ public class ExpressionStack {
             not = BooleanNegation.NOT;
     }
 
-
-
+    /* Performs some sanity checks before inserting the new expression
+     * into the dedicated data structure.
+     */
     private boolean checkBeforeInsert(Expression expr) {
         // andOr, negation checks
         if (andOr != null) {
@@ -54,7 +55,14 @@ public class ExpressionStack {
         }
 
         // Expression order checks
-
+        if (    /* stack is empty and new expression does not have a boolean operation AND/OR */
+                (stack.isEmpty() && !expr.hasBooleanAndOr()) ||
+                        (!stack.isEmpty() && expr.hasBooleanAndOr())
+        ) {
+            return true;
+        }
+        return false;
+    }
 
 //
 //        if (    /* Stack is empty and new expression doesn't have a boolean operation AND/OR */
@@ -64,8 +72,6 @@ public class ExpressionStack {
 //
 //        )
 //            return false;
-        return true;
-    }
 
     public void insert(Expression e) {
         if (checkBeforeInsert(e)) {

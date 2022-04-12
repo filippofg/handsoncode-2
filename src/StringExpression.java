@@ -9,7 +9,7 @@ public class StringExpression extends Expression {
 
     public StringExpression(String property, String value) {
         super(property);
-        this.value    = value;
+        this.value = value;
     }
 
     public String getValue() { return value; }

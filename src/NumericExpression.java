@@ -1,20 +1,21 @@
 
 public class NumericExpression extends Expression {
     private int value;
-    private NumericExpressionType type;
+    private NumericExpressionType operationType;
 
-    public NumericExpression(String property, int value, NumericExpressionType type) {
+    public NumericExpression(String property, int value, NumericExpressionType operationType) {
         super(property);
         this.value = value;
-        this.type = type;
+        this.operationType = operationType;
     }
 
     public int getValue() { return value; }
+    public NumericExpressionType getOperationType() { return operationType; }
 
     @Override
     public String toString() {
         String operation = null;
-        switch (type) {
+        switch (operationType) {
             case GREATER_THAN:
                 operation = ">";
                 break;
@@ -22,7 +23,7 @@ public class NumericExpression extends Expression {
                 operation = "<";
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + type);
+                throw new IllegalStateException("Unexpected value: " + operationType);
         }
 
         return boolToString() + property + " " + operation + " " + value;
