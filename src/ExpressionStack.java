@@ -8,26 +8,26 @@ public class ExpressionStack {
     // Contains multiple expressions which form a query
     private final Stack<Expression> stack;
     // Auxiliary variables for the insertion of boolean expressions
-    private BooleanAndOr    andOr;
-    private BooleanNegation not;
+    private BooleanOperation operation; // AND/OR
+    private BooleanNegation not;        // NOT
 
     public ExpressionStack() {
         stack = new Stack<>();
-        andOr = null;
+        operation = null;
         not   = null;
     }
 
     public Stack<Expression> getStack() { return stack; }
 
     // Set auxiliary flag to AND/OR
-    public void enableAndOr(BooleanAndOr opType) {
-        if (andOr != null) {
+    public void enableBooleanOperation(BooleanOperation operation) {
+        if (this.operation != null) {
             String errorMessage = "Illegal expression order! Valid sequences are:\n" +
                     "\t [NOT] String/Numeric\n" +
                     "\t [NOT] String/Numeric AND/OR [NOT] String/Numeric AND/OR [NOT] ...";
             throw new IllegalStatementException(errorMessage);
         } else
-            andOr = opType;
+            this.operation = operation;
     }
     // Set auxiliary flag to NOT
     public void enableNegation() {
@@ -45,9 +45,9 @@ public class ExpressionStack {
      */
     private boolean checkBeforeInsert(Expression expr) {
         // andOr, negation checks
-        if (andOr != null) {
-            expr.setAndOr(andOr);
-            andOr = null;
+        if (this.operation != null) {
+            expr.setBooleanOperation(this.operation);
+            this.operation = null;
         }
         if (not != null) {
             expr.setNot(not);
@@ -56,8 +56,8 @@ public class ExpressionStack {
 
         // Expression order checks
         if (    /* stack is empty and new expression does not have a boolean operation AND/OR */
-                (stack.isEmpty() && !expr.hasBooleanAndOr()) ||
-                        (!stack.isEmpty() && expr.hasBooleanAndOr())
+                (stack.isEmpty() && !expr.hasBooleanOperation()) ||
+                        (!stack.isEmpty() && expr.hasBooleanOperation())
         ) {
             return true;
         }
@@ -73,9 +73,9 @@ public class ExpressionStack {
 //        )
 //            return false;
 
-    public void insert(Expression e) {
-        if (checkBeforeInsert(e)) {
-            stack.push(e);
+    public void insert(Expression expr) {
+        if (checkBeforeInsert(expr)) {
+            stack.push(expr);
         } else {
             String errorMessage = "Illegal expression order! Valid sequences are:\n" +
                     "\t [NOT] String/Numeric\n" +

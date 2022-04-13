@@ -7,44 +7,44 @@
 
 public abstract class Expression {
     protected String property;
-    protected BooleanAndOr andOr;
+    protected BooleanOperation operation;
     protected BooleanNegation not;
 
     public Expression(String property) {
         this.property = property.toLowerCase();
-        this.andOr    = null;
-        this.not      = null;
+        this.operation = null;
+        this.not = null;
     }
 
-    public Expression(BooleanAndOr andOr) {
-        this.andOr = andOr;
+    public Expression(BooleanOperation operation) {
+        this.operation = operation;
         this.not = null;
     }
 
     public Expression(BooleanNegation not) {
-        this.not   = not;
-        this.andOr = null;
+        this.not = not;
+        this.operation = null;
     }
 
     // Get
-    public String getProperty()  { return property; }
-    public boolean hasAnd()      { return andOr == BooleanAndOr.AND; }
-    public boolean hasOr()       { return andOr == BooleanAndOr.OR; }
-    public boolean hasNegation() { return not == BooleanNegation.NOT; }
-    public boolean hasBooleanAndOr() { return (andOr != null); }
+    public String getProperty()  { return this.property; }
+    public boolean hasAnd()      { return this.operation == BooleanOperation.AND; }
+    public boolean hasOr()       { return this.operation == BooleanOperation.OR; }
+    public boolean hasNegation() { return this.not == BooleanNegation.NOT; }
+    public boolean hasBooleanOperation() { return this.operation != null; }
 
     // Set
-    public void setAndOr(BooleanAndOr opType)    { andOr = opType; }
-    public void setNot(BooleanNegation negation) { not = negation; }
+    public void setBooleanOperation(BooleanOperation operation) { this.operation = operation; }
+    public void setNot(BooleanNegation not) { this.not = not; }
 
     // String generation
     protected String boolToString() {
         String out = "";
-        if (andOr == BooleanAndOr.AND)
+        if (this.operation == BooleanOperation.AND)
             out = "AND" + " ";
-        if (andOr == BooleanAndOr.OR)
+        if (this.operation == BooleanOperation.OR)
             out = "OR" + " ";
-        if (not == BooleanNegation.NOT)
+        if (this.not == BooleanNegation.NOT)
             out = out + "NOT" + " ";
         return out;
     }

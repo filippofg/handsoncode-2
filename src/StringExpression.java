@@ -12,10 +12,10 @@ public class StringExpression extends Expression {
         this.value = value;
     }
 
-    public String getValue() { return value; }
+    public String getValue() { return this.value; }
 
     @Override
     public String toString() {
-        return boolToString() + property + " = " + value;
+        return boolToString() + this.property + " = " + this.value;
     }
 }

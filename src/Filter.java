@@ -3,10 +3,9 @@
  *  a resource matches a given set of criteria.
  */
 
-import java.util.EmptyStackException;
 import java.util.Map;
 
-public class Filter {
+public class Filter implements FilterOperations {
     private Query query;
 
     public Filter(Query query) {
@@ -17,9 +16,9 @@ public class Filter {
      * Returns `true` if there is a match,
      * otherwise returns `false`.
      */
-    public boolean match(Map<String,String> resource) {
+    public boolean matches(Map<String,String> resource) {
         // Current expression
-        Expression expr = query.getStack().pop();
+        Expression expr = this.query
         // Retrieve property
         String property = expr.getProperty();
         // Partial result
@@ -39,16 +38,10 @@ public class Filter {
         } else if (expr instanceof NumericExpression) {
             int value = ((NumericExpression) expr).getValue();
             if (resource.containsKey(property)) {
-                switch (((NumericExpression) expr).getOperationType()) {
-                    case GREATER_THAN:
-                        result = Integer.parseInt(resource.get(property)) > value;
-                        break;
-                    case LESSER_THAN:
-                        result = Integer.parseInt(resource.get(property)) < value;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + ((NumericExpression) expr).getOperationType());
-                }
+                result = switch (((NumericExpression) expr).getNumericOperation()) {
+                    case GREATER_THAN -> Integer.parseInt(resource.get(property)) > value;
+                    case LESSER_THAN -> Integer.parseInt(resource.get(property)) < value;
+                };
             } else
                 result = false;
         }
@@ -58,15 +51,15 @@ public class Filter {
             result = !result;
         // Recursive call based on the specified boolean operation (AND/OR)
         if (expr.hasAnd())
-            return result && match(resource);
+            return result && matches(resource);
         else if (expr.hasOr())
-            return result || match(resource);
+            return result || matches(resource);
         // Last element, when stack is empty, simply returns the partial result
         return result;
     }
 
     @Override
     public String toString() {
-        return query.toString();
+        return this.query.toString();
     }
 }

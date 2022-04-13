@@ -1,46 +1,90 @@
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Iterator;
 
-public class Query {
-    private final ExpressionStack query;
+public class Query implements Statement {
+    // Contains multiple expressions which form a query
+    private LinkedList<Expression> query;
+    private Iterator<Expression> queryIterator;
+    // Auxiliary variables for the insertion of boolean expressions
+    private BooleanOperation operation; // AND/OR
+    private BooleanNegation not;        // NOT
 
     public Query() {
-        query = new ExpressionStack();
+        this.query = new LinkedList<>();
+        this.queryIterator = null;
+        this.operation = null;
+        this.not = null;
     }
 
-    public Query equal(String property, String value) {
-        query.insert(new StringExpression(property, value));
-        return this;
+    // Set auxiliary flag to AND/OR
+    public void enableBooleanOperation(BooleanOperation operation) {
+        if (this.operation != null)
+            throw new IllegalStatementException();
+        else
+            this.operation = operation;
     }
 
-    public Query greater(String property, int value) {
-        query.insert(new NumericExpression(property, value, NumericExpressionType.GREATER_THAN));
-        return this;
+    // Set auxiliary flag to NOT
+    public void enableNegation() {
+        if (this.not != null)
+            throw new IllegalStatementException();
+        else
+            this.not = BooleanNegation.NOT;
     }
 
-    public Query lesser(String property, int value) {
-        query.insert(new NumericExpression(property, value, NumericExpressionType.LESSER_THAN));
-        return this;
-    }
+    /* Performs some sanity checks before inserting the new expression
+     * into the dedicated data structure, namely:
+     *  - boolean flags checks
+     *  - expression order checks
+     * If all checks are passed then the new expression is added to the data structure.
+     */
+    private boolean checkBeforeInsert(Expression expr) {
+        // Boolean operations/negation checks
+        if (this.operation != null) {
+            expr.setBooleanOperation(this.operation);
+            this.operation = null;
+        }
+        if (not != null) {
+            expr.setNot(not);
+            not = null;
+        }
 
-    public Query not() {
-        query.enableNegation();
-        return this;
+        // Expression order checks
+        if (
+            /* query is empty and new expression does not have a boolean operation AND/OR */
+            (this.query.isEmpty() && !expr.hasBooleanOperation()) ||
+            /* query is not empty and new expression has boolean operator AND/OR */
+            (!this.query.isEmpty() && expr.hasBooleanOperation())
+        ) {
+            return true;
+        }
+        return false;
     }
-
-    public Query and() {
-        query.enableAndOr(BooleanAndOr.AND);
-        return this;
-    }
-
-    public Query or() {
-        query.enableAndOr(BooleanAndOr.OR);
-        return this;
-    }
-
-    public Stack<Expression> getStack() { return query.getStack(); }
 
     @Override
+    public void insert(Expression expr) {
+        if (checkBeforeInsert(expr))
+            this.query.add(expr);
+        else
+            throw new IllegalStatementException();
+    }
+
+    // Set iterator once query is finished
+    public void setQueryIterator() {
+        this.queryIterator = query.descendingIterator();
+    }
+
+    /* Generate a string based on the current filter conditions.
+     * This string can be parsed in the Filter constructor
+     * to build a new object with the same conditions.
+     */
+    @Override
     public String toString() {
-        return query.toString();
+        StringBuilder out = new StringBuilder();
+        for (Expression expr: query) {
+            out.append(expr.toString()).append(" ");
+        }
+        return out.toString().toString();
     }
 }
