@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Filter implements FilterOperations {
-    private Query query;
+    private final Query query;
     private Iterator<Expression> queryIterator;
 
     public Filter(Query query) {
@@ -19,6 +19,7 @@ public class Filter implements FilterOperations {
      * Returns `true` if there is a match,
      * otherwise returns `false`.
      */
+    @Override
     public boolean matches(Map<String,String> resource) {
         // Get current expression
         Expression expr = queryIterator.next();
@@ -47,7 +48,6 @@ public class Filter implements FilterOperations {
             // If the specified property does not exist
             result = false;
         }
-
         // Negate the partial result if the expression contains a NOT
         if (expr.hasNegation())
             result = !result;
@@ -58,7 +58,6 @@ public class Filter implements FilterOperations {
             else if (expr.hasOr())
                 return result || matches(resource);
         }
-
         // If this is the last expression
         // reset the iterator (horrible)
         this.resetIterator();
@@ -69,48 +68,6 @@ public class Filter implements FilterOperations {
     private void resetIterator() {
         this.queryIterator = this.query.getDescendingIterator();
     }
-
-//    public boolean matches(Map<String,String> resource) {
-//        // Current expression
-//        Expression expr = null;
-//        // Retrieve property
-//        String property = expr.getProperty();
-//        // Partial result
-//        Boolean result = null;
-//        // String comparison
-//        if (expr instanceof StringExpression) {
-//            // Retrieve value
-//            String value = ((StringExpression) expr).getValue();
-//            // If property does not exist, then
-//            // result = false. This ensures compatiblity
-//            // with boolean AND/OR if present
-//            if (resource.containsKey(property)) {
-//                result = resource.get(property).equals(value);
-//            } else
-//                result = false;
-//
-//        } else if (expr instanceof NumericExpression) {
-//            int value = ((NumericExpression) expr).getValue();
-//            if (resource.containsKey(property)) {
-//                result = switch (((NumericExpression) expr).getNumericOperation()) {
-//                    case GREATER_THAN -> Integer.parseInt(resource.get(property)) > value;
-//                    case LESSER_THAN -> Integer.parseInt(resource.get(property)) < value;
-//                };
-//            } else
-//                result = false;
-//        }
-//
-//        // Apply logic NOT
-//        if (expr.hasNegation())
-//            result = !result;
-//        // Recursive call based on the specified boolean operation (AND/OR)
-//        if (expr.hasAnd())
-//            return result && matches(resource);
-//        else if (expr.hasOr())
-//            return result || matches(resource);
-//        // Last element, when stack is empty, simply returns the partial result
-//        return result;
-//    }
 
     @Override
     public String toString() {

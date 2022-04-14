@@ -1,41 +1,49 @@
+import java.util.LinkedList;
 
-public class QueryBuilder {
-    private Query query;
+public class QueryBuilder implements StatementBuilder {
+    private LinkedList<Expression> list;
     private BooleanOperation operation;
     private BooleanNegation not;
 
     public QueryBuilder() {
-        this.query = new Query();
+        this.list = new LinkedList<>();
         this.operation = null;
         this.not = null;
     }
+
     // property = value
-    public QueryBuilder equal(String property, String value) {
+    @Override
+    public StatementBuilder equal(String property, String value) {
         this.insert(new StringExpression(property, value));
         return this;
     }
     // property > value
-    public QueryBuilder greater(String property, int value) {
+    @Override
+    public StatementBuilder greater(String property, int value) {
         this.insert(new NumericExpression(property, value, NumericExpressionType.GREATER_THAN));
         return this;
     }
     // property < value
-    public QueryBuilder lesser(String property, int value) {
+    @Override
+    public StatementBuilder lesser(String property, int value) {
         this.insert(new NumericExpression(property, value, NumericExpressionType.LESSER_THAN));
         return this;
     }
     // NOT <expression>
-    public QueryBuilder not() {
+    @Override
+    public StatementBuilder not() {
         this.enableNegation();
         return this;
     }
     // <expression> AND <expression>
-    public QueryBuilder and() {
+    @Override
+    public StatementBuilder and() {
         this.enableBooleanOperation(BooleanOperation.AND);
         return this;
     }
     // <expression> OR <expression>
-    public QueryBuilder or() {
+    @Override
+    public StatementBuilder or() {
         this.enableBooleanOperation(BooleanOperation.OR);
         return this;
     }
@@ -43,12 +51,18 @@ public class QueryBuilder {
     /* Performs last checks before building the expression
      * then returns the Query object
      */
+    @Override
     public Query build() {
         // Performs checks of remaining '.and()' '.or()' '.not()'
         if (operation != null || not != null) {
             throw new IllegalStatementException();
         }
-        return this.query;
+        return new Query(this.list);
+    }
+
+    @Override
+    public StatementBuilder newQuery() {
+        return new QueryBuilder();
     }
 
     // Set auxiliary flag to AND/OR
@@ -84,21 +98,16 @@ public class QueryBuilder {
             not = null;
         }
         // Expression order checks
-        if (
-            /* query is empty and new expression does not have a boolean operation AND/OR */
-            (this.query.getList().isEmpty() && !expr.hasBooleanOperation()) ||
-            /* query is not empty and new expression has boolean operator AND/OR */
-            (!this.query.getList().isEmpty() && expr.hasBooleanOperation())
-        ) {
-            return true;
-        }
-        return false;
+        /* query is empty and new expression does not have a boolean operation AND/OR */
+        return (this.list.isEmpty() && !expr.hasBooleanOperation()) ||
+                /* query is not empty and new expression has boolean operator AND/OR */
+                (!this.list.isEmpty() && expr.hasBooleanOperation());
     }
 
     // Insert expression in the expression list
     private void insert(Expression expr) {
         if (checkBeforeInsert(expr))
-            this.query.getList().add(expr);
+            this.list.add(expr);
         else
             throw new IllegalStatementException();
     }

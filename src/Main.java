@@ -10,36 +10,32 @@ public class Main {
         user.put("role", "administrator");
         user.put("age", "35");
 
-        Filter f = new Filter(new QueryBuilder()
-                .greater("age", 25)
+        StatementBuilder builder = new QueryBuilder();
+        Filter f = new Filter(
+                builder.lesser("age", 36)
+                        .and()
+                        .equal("age", "35")
+                        .build()
+        );
+
+        Query q = builder.newQuery()
+                .greater("age", 37)
                 .or()
+                .equal("lastname", "Bloggs")
+                .build();
+        Filter filter = new Filter(q);
+        System.out.println("filter: " + filter);
+        Filter filter1 = new Filter(new QueryBuilder()
                 .not()
-                .equal("firstname", "Joe")
-                /*.and() /* this should not work */
+                .equal("role", "administratoR")
                 .build()
         );
-
-        Filter filter = new Filter(new QueryBuilder()
-                .equal("role", "administrator")
-                .and()
-                .greater("age", 30)
-                .build()
-        );
-
-        Filter f1 = new Filter(new QueryBuilder().build());
-
-        System.out.println(filter);
-        System.err.println(filter.matches(user));
-        user.put("age", "20");
-        System.err.println(filter.matches(user));
-
-        //Filter f1 = new Filter(null);
-        //System.err.println(f1);
-        //System.err.println(f1.matches(user));
+        System.out.println("filter1: "+filter1);
+        System.out.println(f);
+        System.out.println(f.matches(user));
 
         user.put("age", "25");
-        // System.err.println(filter.match(user));
-
+        System.out.println(f.matches(user));
 
     }
 }

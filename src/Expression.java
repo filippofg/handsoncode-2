@@ -16,16 +16,6 @@ public abstract class Expression {
         this.not = null;
     }
 
-    public Expression(BooleanOperation operation) {
-        this.operation = operation;
-        this.not = null;
-    }
-
-    public Expression(BooleanNegation not) {
-        this.not = not;
-        this.operation = null;
-    }
-
     // Get
     public String getProperty()  { return this.property; }
     public boolean hasAnd()      { return this.operation == BooleanOperation.AND; }

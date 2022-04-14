@@ -5,8 +5,8 @@ public class Query {
     // Contains multiple expressions which form a query
     private final LinkedList<Expression> list;
 
-    public Query() {
-        this.list = new LinkedList<>();
+    public Query(LinkedList<Expression> list) {
+        this.list = list;
     }
 
     public Iterator<Expression> getDescendingIterator() { return this.list.descendingIterator(); }
@@ -22,6 +22,6 @@ public class Query {
         for (Expression expr: list) {
             out.append(expr.toString()).append(" ");
         }
-        return out.toString().toString();
+        return out.toString();
     }
 }
