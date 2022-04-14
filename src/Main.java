@@ -15,7 +15,7 @@ public class Main {
                 .or()
                 .not()
                 .equal("firstname", "Joe")
-                .and() /* this should not work */
+                /*.and() /* this should not work */
                 .build()
         );
 
@@ -26,16 +26,18 @@ public class Main {
                 .build()
         );
 
+        Filter f1 = new Filter(new QueryBuilder().build());
+
         System.out.println(filter);
         System.err.println(filter.matches(user));
+        user.put("age", "20");
+        System.err.println(filter.matches(user));
 
-        Filter f1 = new Filter(null);
+        //Filter f1 = new Filter(null);
         //System.err.println(f1);
-        System.err.println(f1.matches(user));
+        //System.err.println(f1.matches(user));
 
         user.put("age", "25");
-        // FIXME: Filter.match method makes Filter object unusable beacuse of empty stack
-        // TODO: Stack is deprecated (?)
         // System.err.println(filter.match(user));
 
 
