@@ -86,7 +86,8 @@ class FilterTest {
     void matchesComplex() {
         initResource();
         Filter filter = new Filter(new QueryBuilder()
-                .equal("firstname", "Joe")
+                .not()
+                .equal("firstname", "John")
                 .or()
                 .not()
                 .equal("role", "user")
@@ -128,6 +129,20 @@ class FilterTest {
     // String generation: query with boolean operators AND, OR, NOT
     @Test
     void generateStringFromBooleanExpression() {
+        Query query = new QueryBuilder()
+                .not()
+                .equal("role", "administrator")
+                .and()
+                .equal("firstname", "Joe")
+                .or()
+                .greater("age", 30)
+                .build();
+        assertEquals("NOT role = administrator AND firstname = Joe OR age > 30", query.toString());
+    }
 
+    // Empty query
+    @Test
+    void emptyQuery() {
+        assertThrowsExactly(IllegalStatementException.class, () -> { new QueryBuilder().build(); });
     }
 }
