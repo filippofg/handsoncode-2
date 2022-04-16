@@ -53,8 +53,12 @@ public class QueryBuilder implements StatementBuilder {
      */
     @Override
     public Query build() {
-        // Performs checks of remaining '.and()' '.or()' '.not()'
-        if (operation != null || not != null) {
+        // Check if the partial query is empty
+        if (this.list.isEmpty()) {
+            throw new IllegalStatementException("statement cannot be empty");
+        }
+        // Perform checks of remaining '.and()' '.or()' '.not()'
+        if (this.operation != null || this.not != null) {
             throw new IllegalStatementException();
         }
         return new Query(this.list);

@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class Query {
     // Contains multiple expressions which form a query
@@ -19,9 +20,16 @@ public class Query {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        for (Expression expr: list) {
-            out.append(expr.toString()).append(" ");
+
+        for (int i = 0; i < this.list.size(); i++) {
+            out.append(this.list.get(i));
+            /* This does not append an unnecessary whitespace
+             * at the end of the generated string
+             */
+            if (i < this.list.size()-1)
+                out.append(" ");
         }
+
         return out.toString();
     }
 }

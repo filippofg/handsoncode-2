@@ -9,7 +9,7 @@ public class IllegalStatementException extends RuntimeException {
     }
 
     public IllegalStatementException() {
-       super("Illegal expression order! Valid sequences are:\n" +
+       super("illegal expression order! Valid sequences are:\n" +
                 "\t [NOT] String/Numeric\n" +
                 "\t [NOT] String/Numeric AND/OR [NOT] String/Numeric AND/OR [NOT] ..."
        );

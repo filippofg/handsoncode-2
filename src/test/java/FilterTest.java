@@ -60,13 +60,12 @@ class FilterTest {
         assertTrue(filter.matches(user));
     }
 
-    /* Filter with a StringExpression and a NumericExpression
-     *  property = value
-     *  AND
-     *  property > value
+    /* Filter with a StringExpression and a NumericExpression;
+     * call 'matches' on the resource, then modify it and
+     * call the method again.
      */
     @Test
-    void matchesEqualAndGreater() {
+    void matchesReusability() {
         initResource();
         Filter filter = new Filter(new QueryBuilder()
                 .equal("role", "administrator")
@@ -80,4 +79,55 @@ class FilterTest {
         assertFalse(filter.matches(user));
     }
 
+    /* Complex filter:
+     * property = value OR NOT property = value AND property < value AND property > value
+     */
+    @Test
+    void matchesComplex() {
+        initResource();
+        Filter filter = new Filter(new QueryBuilder()
+                .equal("firstname", "Joe")
+                .or()
+                .not()
+                .equal("role", "user")
+                .and()
+                .lesser("age", 40)
+                .and()
+                .greater("age", 25)
+                .build()
+        );
+        assertTrue(filter.matches(user));
+    }
+
+    // String generation: StringExpression
+    @Test
+    void generateStringFromStringExpression() {
+        String property = "role";
+        String value    = "administrator";
+        Query query = new QueryBuilder()
+                .equal(property, value)
+                .build();
+        assertEquals(property + " = " + value, query.toString());
+    }
+
+    // String generation: NumericExpression
+    @Test
+    void generateStringFromNumericExpression() {
+        String property = "age";
+        int value       = 25;
+        Query queryGreater = new QueryBuilder()
+                .greater(property, value)
+                .build();
+        Query queryLesser = new QueryBuilder()
+                .lesser(property, value)
+                .build();
+        assertEquals(property + " > " + value, queryGreater.toString());
+        assertEquals(property + " < " + value, queryLesser.toString());
+    }
+
+    // String generation: query with boolean operators AND, OR, NOT
+    @Test
+    void generateStringFromBooleanExpression() {
+
+    }
 }

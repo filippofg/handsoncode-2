@@ -10,32 +10,13 @@ public class Main {
         user.put("role", "administrator");
         user.put("age", "35");
 
-        StatementBuilder builder = new QueryBuilder();
-        Filter f = new Filter(
-                builder.lesser("age", 36)
-                        .and()
-                        .equal("age", "35")
-                        .build()
+        Filter filter = new Filter(new QueryBuilder()
+               .equal("role", "administrator")
+               .and()
+               .greater("age", 30)
+               .build()
         );
 
-        Query q = builder.newQuery()
-                .greater("age", 37)
-                .or()
-                .equal("lastname", "Bloggs")
-                .build();
-        Filter filter = new Filter(q);
-        System.out.println("filter: " + filter);
-        Filter filter1 = new Filter(new QueryBuilder()
-                .not()
-                .equal("role", "administratoR")
-                .build()
-        );
-        System.out.println("filter1: "+filter1);
-        System.out.println(f);
-        System.out.println(f.matches(user));
-
-        user.put("age", "25");
-        System.out.println(f.matches(user));
-
+        System.out.println(filter.matches(user));
     }
 }
