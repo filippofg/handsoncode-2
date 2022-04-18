@@ -39,9 +39,13 @@ public class Filter implements FilterOperations {
                 int value           = ((NumericExpression) expr).getValue();
                 int propertyNumeric = Integer.parseInt(resource.get(property));
 
-                result = switch (((NumericExpression) expr).getNumericOperation()) {
-                    case GREATER_THAN -> propertyNumeric > value;
-                    case LESSER_THAN ->  propertyNumeric < value;
+                switch (((NumericExpression) expr).getNumericOperation()) {
+                    case GREATER_THAN:
+                        result = propertyNumeric > value;
+                        break;
+                    case LESSER_THAN:
+                        result = propertyNumeric < value;
+                        break;
                 };
             }
         } else {

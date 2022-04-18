@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FilterTest {
+class TestFilter {
 
     static Map<String,String> user = new HashMap<>();
 

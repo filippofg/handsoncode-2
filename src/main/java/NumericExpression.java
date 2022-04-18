@@ -14,9 +14,14 @@ public class NumericExpression extends Expression {
 
     @Override
     public String toString() {
-        String op = switch (this.numericOperation) {
-            case GREATER_THAN -> ">";
-            case LESSER_THAN -> "<";
+        String op = "";
+        switch (this.numericOperation) {
+            case GREATER_THAN:
+                op = ">";
+                break;
+            case LESSER_THAN:
+                op = "<";
+                break;
         };
         return boolToString() + this.property + " " + op + " " + this.value;
     }
