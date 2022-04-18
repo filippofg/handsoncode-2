@@ -1,6 +1,6 @@
-.idea
+.idea/
 *.iml
-out
-*.md
+out/
+
 .attach*
-target
+target/
